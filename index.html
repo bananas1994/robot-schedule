@@ -294,6 +294,21 @@
       margin-bottom: 5px;
     }
     
+    #importExport {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    #importData {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+    }
+    
     @media (max-width: 768px) {
       .container {
         padding: 15px;
@@ -336,6 +351,8 @@
       <button id="saveButton">Save Changes</button>
       <button id="loadButton">Refresh Schedule</button>
       <button id="exportButton">Export Schedule</button>
+      <button id="backupButton">Backup Schedule</button>
+      <button id="restoreButton">Restore from Backup</button>
     </div>
     
     <div id="statusMessage" class="status-message hidden"></div>
@@ -344,6 +361,14 @@
     <div id="exportSection" class="hidden">
       <h3>Export Data (Copy this text)</h3>
       <textarea id="exportBox" readonly></textarea>
+    </div>
+    
+    <div id="importExport" class="hidden">
+      <h3>Backup/Restore Schedule Data</h3>
+      <p>Copy this text to save your current schedule:</p>
+      <textarea id="backupData" readonly></textarea>
+      <p>Paste previously saved schedule data below and click "Restore from Backup":</p>
+      <textarea id="importData"></textarea>
     </div>
     
     <h2>Training Week - May 19, 2025</h2>
@@ -650,9 +675,14 @@
     const saveButton = document.getElementById('saveButton');
     const loadButton = document.getElementById('loadButton');
     const exportButton = document.getElementById('exportButton');
+    const backupButton = document.getElementById('backupButton');
+    const restoreButton = document.getElementById('restoreButton');
     const statusMessage = document.getElementById('statusMessage');
     const exportSection = document.getElementById('exportSection');
     const exportBox = document.getElementById('exportBox');
+    const importExportSection = document.getElementById('importExport');
+    const backupDataBox = document.getElementById('backupData');
+    const importDataBox = document.getElementById('importData');
     const loader = document.getElementById('loader');
     
     // Current cell being edited
@@ -689,366 +719,3 @@
         modal.style.display = 'block';
       });
     });
-    
-    // Close modal when clicking X
-    modalClose.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
-    
-    // Close modal when clicking outside
-    window.addEventListener('click', (event) => {
-      if (event.target === modal) {
-        modal.style.display = 'none';
-      }
-    });
-    
-    // Confirm name button
-    confirmNameBtn.addEventListener('click', () => {
-      // Standard shift
-      const name = nameInput.value.trim();
-      
-      if (!name) {
-        showStatusMessage('Please enter your name', 'error');
-        return;
-      }
-      
-      // For regular shifts, support multiple people
-      let currentContent = currentCell.textContent;
-      
-      if (currentContent) {
-        // Check if this person already signed up
-        if (currentContent.includes(name)) {
-          showStatusMessage('You are already signed up for this shift', 'error');
-          return;
-        }
-        
-        // Add the new name
-        currentCell.textContent = currentContent + '\n' + name;
-      } else {
-        currentCell.textContent = name;
-      }
-      
-      updateShiftAssignment(
-        currentCell.getAttribute('data-date'),
-        currentCell.getAttribute('data-shift'),
-        currentCell.textContent
-      );
-      
-      modal.style.display = 'none';
-    });
-    
-    // Remove name button
-    removeNameBtn.addEventListener('click', () => {
-      // Standard shift
-      const name = nameInput.value.trim();
-      
-      if (!name) {
-        showStatusMessage('Please enter your name to remove', 'error');
-        return;
-      }
-      
-      // Parse existing entries
-      let currentContent = currentCell.textContent;
-      
-      if (!currentContent) {
-        showStatusMessage('No one is signed up for this shift yet', 'error');
-        return;
-      }
-      
-      const entries = currentContent.split('\n').filter(entry => entry.trim() !== '');
-      const updatedEntries = entries.filter(entry => entry !== name);
-      
-      if (entries.length === updatedEntries.length) {
-        showStatusMessage('Your name was not found in this shift', 'error');
-        return;
-      }
-      
-      if (updatedEntries.length === 0) {
-        currentCell.textContent = '';
-      } else {
-        currentCell.textContent = updatedEntries.join('\n');
-      }
-      
-      updateShiftAssignment(
-        currentCell.getAttribute('data-date'),
-        currentCell.getAttribute('data-shift'),
-        currentCell.textContent
-      );
-      
-      showStatusMessage('Name removed from shift', 'success');
-      modal.style.display = 'none';
-    });
-    
-    // Save schedule button
-    saveButton.addEventListener('click', () => {
-      saveAllChanges();
-    });
-    
-    // Load schedule button
-    loadButton.addEventListener('click', () => {
-      loadScheduleFromSheet();
-    });
-    
-    // Export schedule button
-    exportButton.addEventListener('click', () => {
-      exportSchedule();
-    });
-    
-    // Update a single shift assignment
-    function updateShiftAssignment(date, shift, technician) {
-      showLoader(true);
-      
-      fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          'action': 'updateShift',
-          'date': date,
-          'shift': shift,
-          'technician': technician
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        showLoader(false);
-        
-        if (data.status === 'success') {
-          showStatusMessage('Shift updated successfully!', 'success');
-        } else {
-          showStatusMessage('Error: ' + data.message, 'error');
-        }
-      })
-      .catch(error => {
-        showLoader(false);
-        showStatusMessage('Network error: Could not update shift. Changes saved locally.', 'error');
-        // Fallback to localStorage if Google Sheets API fails
-        saveToLocalStorage();
-      });
-    }
-    
-    // Save all changes
-    function saveAllChanges() {
-      showStatusMessage('Saving all changes...', 'success');
-      
-      const scheduleData = {};
-      
-      // Gather all shift data
-      shiftCells.forEach(cell => {
-        const date = cell.getAttribute('data-date');
-        const shift = cell.getAttribute('data-shift');
-        const content = cell.textContent;
-        
-        if (content) {
-          const key = `${date}-${shift}`;
-          scheduleData[key] = content;
-          
-          // Also update the server
-          updateShiftAssignment(date, shift, content);
-        }
-      });
-      
-      // Save to localStorage as backup
-      localStorage.setItem('robotMonitoringSchedule', JSON.stringify(scheduleData));
-      
-      showStatusMessage('All changes saved!', 'success');
-    }
-    
-    // Load schedule from Google Sheet
-    function loadScheduleFromSheet() {
-      showLoader(true);
-      showStatusMessage('Loading schedule...', 'success');
-      
-      fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          'action': 'getSchedule'
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        showLoader(false);
-        
-        if (data.status === 'success') {
-          // Clear all cells first
-          shiftCells.forEach(cell => {
-            cell.textContent = '';
-          });
-          
-          // Apply new assignments
-          data.data.forEach(assignment => {
-            const cell = document.querySelector(`.shift-cell[data-date="${assignment.date}"][data-shift="${assignment.shift}"]`);
-            if (cell) {
-              cell.textContent = assignment.technician;
-            }
-          });
-          
-          // Save to localStorage as backup
-          saveToLocalStorage();
-          
-          showStatusMessage('Schedule loaded successfully!', 'success');
-        } else {
-          showStatusMessage('Error: ' + data.message, 'error');
-          
-          // Fallback to localStorage
-          loadFromLocalStorage();
-        }
-      })
-      .catch(error => {
-        showLoader(false);
-        showStatusMessage('Network error: Could not load from server. Loading from local storage.', 'error');
-        
-        // Fallback to localStorage
-        loadFromLocalStorage();
-      });
-    }
-    
-    // Export schedule
-    function exportSchedule() {
-      let exportData = "Upside Robotics - Robot Monitoring Schedule\n\n";
-      
-      // Week 1 
-      exportData += "Week 1 - May 20 to May 25\n";
-      for (let i = 20; i <= 25; i++) {
-        const date = `May ${i}`;
-        const officeCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="office"]`);
-        const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
-        const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
-        
-        exportData += `${date}:\n`;
-        exportData += `  Office: ${officeCell?.textContent || 'No assignments'}\n`;
-        exportData += `  Evening: ${eveningCell?.textContent || 'No assignments'}\n`;
-        exportData += `  Night: ${nightCell?.textContent || 'No assignments'}\n\n`;
-      }
-      
-      // Week 2
-      exportData += "\nWeek 2 - May 27 to June 2\n";
-      for (let i = 27; i <= 31; i++) {
-        const date = `May ${i}`;
-        const officeCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="office"]`);
-        const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
-        const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
-        
-        exportData += `${date}:\n`;
-        exportData += `  Office: ${officeCell?.textContent || 'No assignments'}\n`;
-        exportData += `  Evening: ${eveningCell?.textContent || 'No assignments'}\n`;
-        exportData += `  Night: ${nightCell?.textContent || 'No assignments'}\n\n`;
-      }
-      
-      for (let i = 1; i <= 2; i++) {
-        const date = `June ${i}`;
-        const officeCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="office"]`);
-        const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
-        const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
-        
-        exportData += `${date}:\n`;
-        exportData += `  Office: ${officeCell?.textContent || 'No assignments'}\n`;
-        exportData += `  Evening: ${eveningCell?.textContent || 'No assignments'}\n`;
-        exportData += `  Night: ${nightCell?.textContent || 'No assignments'}\n\n`;
-      }
-      
-      // Week 3
-      exportData += "\nWeek 3 - June 3 to June 9\n";
-      for (let i = 3; i <= 9; i++) {
-        const date = `June ${i}`;
-        const officeCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="office"]`);
-        const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
-        const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
-        
-        exportData += `${date}:\n`;
-        exportData += `  Office: ${officeCell?.textContent || 'No assignments'}\n`;
-        exportData += `  Evening: ${eveningCell?.textContent || 'No assignments'}\n`;
-        exportData += `  Night: ${nightCell?.textContent || 'No assignments'}\n\n`;
-      }
-      
-      // Week 4
-      exportData += "\nWeek 4 - June 10 to June 16\n";
-      for (let i = 10; i <= 16; i++) {
-        const date = `June ${i}`;
-        const officeCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="office"]`);
-        const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
-        const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
-        
-        exportData += `${date}:\n`;
-        exportData += `  Office: ${officeCell?.textContent || 'No assignments'}\n`;
-        exportData += `  Evening: ${eveningCell?.textContent || 'No assignments'}\n`;
-        exportData += `  Night: ${nightCell?.textContent || 'No assignments'}\n\n`;
-      }
-      
-      // Show in export box
-      exportBox.value = exportData;
-      exportSection.classList.remove('hidden');
-      
-      // Select the text for easy copying
-      exportBox.select();
-    }
-    
-    // Save to localStorage as fallback
-    function saveToLocalStorage() {
-      const scheduleData = {};
-      
-      shiftCells.forEach(cell => {
-        const date = cell.getAttribute('data-date');
-        const shift = cell.getAttribute('data-shift');
-        const content = cell.textContent;
-        
-        if (content) {
-          const key = `${date}-${shift}`;
-          scheduleData[key] = content;
-        }
-      });
-      
-      localStorage.setItem('robotMonitoringSchedule', JSON.stringify(scheduleData));
-    }
-    
-    // Load from localStorage as fallback
-    function loadFromLocalStorage() {
-      const savedData = localStorage.getItem('robotMonitoringSchedule');
-      
-      if (savedData) {
-        const scheduleData = JSON.parse(savedData);
-        
-        // Clear cells
-        shiftCells.forEach(cell => {
-          cell.textContent = '';
-        });
-        
-        // Apply saved data
-        Object.keys(scheduleData).forEach(key => {
-          const [date, shift] = key.split('-');
-          const cell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="${shift}"]`);
-          
-          if (cell) {
-            cell.textContent = scheduleData[key];
-          }
-        });
-        
-        showStatusMessage('Schedule loaded from local storage', 'success');
-      } else {
-        showStatusMessage('No saved schedule found locally', 'error');
-      }
-    }
-    
-    // Function to show/hide loading spinner
-    function showLoader(show) {
-      loader.style.display = show ? 'block' : 'none';
-    }
-    
-    // Function to show status messages
-    function showStatusMessage(message, type) {
-      statusMessage.textContent = message;
-      statusMessage.className = 'status-message';
-      statusMessage.classList.add(type);
-      statusMessage.classList.remove('hidden');
-      
-      setTimeout(() => {
-        statusMessage.classList.add('hidden');
-      }, 3000);
-    }
-    
-    // Load the schedule when the page loads
-    document.addEventListener('DOMContentLoaded', () => {
-      // Load the schedule
-      loadScheduleFromSheet();
-    });
-  </script>
-</body>
-</html>
