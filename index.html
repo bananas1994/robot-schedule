@@ -5,12 +5,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
+    :root {
+      --primary-color: #1d3b3a;
+      --accent-color: #c1e41c;
+      --text-color: #333;
+      --background-color: #fafafa;
+      --card-background: #fff;
+      --border-color: #e0e0e0;
+      --table-header: #f5f5f5;
+      --evening-shift: #f7f9e1;
+      --night-shift: #f0f0f0;
+      --weekend-shift: #f5fbf5;
+      --success-color: #d4edda;
+      --error-color: #f8d7da;
+      --training-color: #e1f7e4;
+    }
+    
+    * {
       margin: 0;
       padding: 0;
-      color: #333;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     
     .container {
@@ -19,121 +42,163 @@
       padding: 20px;
     }
     
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 40px;
+      flex-direction: column;
+    }
+    
+    .logo {
+      max-width: 300px;
+      margin-bottom: 20px;
+    }
+    
     h1 {
-      color: #2c3e50;
+      color: var(--primary-color);
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
+      font-weight: 500;
+      font-size: 28px;
     }
     
     h2 {
-      color: #3498db;
-      margin: 20px 0 10px;
+      color: var(--primary-color);
+      margin: 30px 0 15px;
+      font-weight: 500;
+      font-size: 22px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
     }
     
     h3 {
-      color: #2980b9;
-      margin: 15px 0 10px;
+      color: var(--primary-color);
+      margin: 25px 0 15px;
+      font-weight: 500;
+      font-size: 18px;
     }
     
     table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 30px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      background-color: var(--card-background);
     }
     
     th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
+      border: 1px solid var(--border-color);
+      padding: 12px;
       text-align: center;
     }
     
     th {
-      background-color: #3498db;
-      color: white;
+      background-color: var(--table-header);
+      font-weight: 500;
     }
     
     tr:nth-child(even) {
-      background-color: #f2f2f2;
+      background-color: rgba(0,0,0,0.02);
     }
     
     .shift-evening {
-      background-color: #fef9e7;
+      background-color: var(--evening-shift);
     }
     
     .shift-night {
-      background-color: #eaecee;
+      background-color: var(--night-shift);
+    }
+    
+    .shift-weekend {
+      background-color: var(--weekend-shift);
     }
     
     .training {
-      background-color: #d5f5e3;
-      font-weight: bold;
+      background-color: var(--training-color);
+      font-weight: 500;
     }
     
     .weekend {
-      font-weight: bold;
+      font-weight: 500;
     }
     
     .notes {
-      margin-top: 20px;
+      margin-top: 30px;
+    }
+    
+    .card {
+      background-color: var(--card-background);
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
     }
     
     .instruction {
-      background-color: #f8f9f9;
-      padding: 15px;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      border-left: 5px solid #3498db;
+      background-color: var(--card-background);
+      padding: 25px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     
     .controls {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       margin: 20px 0;
       flex-wrap: wrap;
+      gap: 10px;
     }
     
     button {
-      background-color: #3498db;
+      background-color: var(--primary-color);
       color: white;
       border: none;
-      padding: 10px 15px;
-      border-radius: 4px;
+      padding: 10px 20px;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: bold;
-      margin: 5px;
+      font-weight: 500;
+      font-size: 14px;
+      transition: background 0.3s ease;
     }
     
     button:hover {
-      background-color: #2980b9;
+      background-color: var(--accent-color);
+      color: var(--primary-color);
     }
     
     .status-message {
-      margin-top: 20px;
-      padding: 10px;
-      border-radius: 4px;
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 6px;
+      text-align: center;
     }
     
     .success {
-      background-color: #d5f5e3;
-      border: 1px solid #2ecc71;
+      background-color: var(--success-color);
+      border: 1px solid #c3e6cb;
     }
     
     .error {
-      background-color: #fadbd8;
-      border: 1px solid #e74c3c;
+      background-color: var(--error-color);
+      border: 1px solid #f5c6cb;
     }
     
     #exportSection {
-      margin-top: 20px;
+      margin-top: 30px;
     }
     
     #exportBox {
       width: 100%;
-      height: 100px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin-top: 10px;
+      height: 150px;
+      padding: 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      margin-top: 15px;
+      font-family: monospace;
     }
     
     .hidden {
@@ -154,13 +219,14 @@
     }
     
     .modal-content {
-      background-color: #fefefe;
+      background-color: var(--card-background);
       margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
+      padding: 25px;
+      border: 1px solid var(--border-color);
+      width: 90%;
       max-width: 500px;
-      border-radius: 5px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     
     .close {
@@ -168,27 +234,28 @@
       float: right;
       font-size: 28px;
       font-weight: bold;
+      cursor: pointer;
     }
     
     .close:hover,
     .close:focus {
       color: black;
       text-decoration: none;
-      cursor: pointer;
     }
     
-    #nameInput {
+    #nameInput, #timeInput {
       width: 100%;
-      padding: 8px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      padding: 12px;
+      margin: 15px 0;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 16px;
     }
     
     /* Loading spinner */
     .loader {
       border: 5px solid #f3f3f3;
-      border-top: 5px solid #3498db;
+      border-top: 5px solid var(--accent-color);
       border-radius: 50%;
       width: 30px;
       height: 30px;
@@ -202,7 +269,42 @@
       100% { transform: rotate(360deg); }
     }
     
+    ul {
+      list-style-position: inside;
+      margin-left: 10px;
+    }
+    
+    li {
+      margin-bottom: 8px;
+    }
+    
+    .note {
+      font-style: italic;
+      color: #666;
+      margin-top: 5px;
+    }
+    
+    strong {
+      font-weight: 600;
+    }
+    
+    .multi-name {
+      margin-bottom: 5px;
+    }
+    
     @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      
+      table {
+        font-size: 14px;
+      }
+      
+      th, td {
+        padding: 8px 5px;
+      }
+      
       .controls {
         flex-direction: column;
       }
@@ -216,18 +318,29 @@
 </head>
 <body>
   <div class="container">
-    <h1>Upside Robotics - Robot Monitoring Schedule</h1>
+    <header>
+      <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 900">
+        <path d="M150 300c0-80 60-150 150-150s150 70 150 150v300c0 80-60 150-150 150s-150-70-150-150V300zm75 0v300c0 40 35 75 75 75s75-35 75-75V300c0-40-35-75-75-75s-75 35-75 75z" fill="#1d3b3a"/>
+        <path d="M550 155h75v445c0 40 35 75 75 75s75-35 75-75V155h75v445c0 80-60 150-150 150s-150-70-150-150V155z" fill="#1d3b3a"/>
+        <path d="M950 630c-5 45-25 85-60 115-30 25-65 40-105 40-40 0-75-15-105-40-35-30-55-70-60-115V155h75v475c0 20 10 40 25 55 15 15 35 25 65 25 25 0 45-10 65-25 15-15 25-35 25-55V155h75v475z" fill="#1d3b3a"/>
+        <path d="M1050 155h75v520h-75V155z" fill="#1d3b3a"/>
+        <path d="M1250 305c0-40 15-75 40-105 30-30 70-45 110-45 45 0 85 15 110 45 25 30 40 65 40 105v220c0 45-15 80-40 110-25 25-65 45-110 45-40 0-80-20-110-45-25-30-40-65-40-110V305zm75 0v220c0 20 5 40 20 50 15 15 35 20 55 20s40-5 55-20c15-10 20-30 20-50V305c0-20-5-35-20-50-15-15-35-20-55-20s-40 5-55 20c-15 15-20 30-20 50z" fill="#1d3b3a"/>
+        <path d="M1650 155h80l120 520h-75l-25-110h-120l-30 110h-70l120-520zm15 120l-45 215h85l-40-215z" fill="#1d3b3a"/>
+        <path d="M1720 50c-14 0-24-4-33-13-9-10-14-20-14-32 0-13 5-25 14-34 9-8 20-12 34-12 14 0 26 4 35 12 9 9 13 21 13 34 0 12-4 23-13 32-9 9-21 13-36 13zm140 270c55 55 55 145 0 200s-145 55-200 0-55-145 0-200 145-55 200 0zm-38 38c-34-34-89-34-124 0-34 34-34 90 0 124 35 34 90 34 124 0 34-34 34-90 0-124zm-38 38c12 12 12 37 0 49-13 12-37 12-49 0-12-12-12-37 0-49 12-12 36-12 49 0z" fill="#c1e41c"/>
+      </svg>
+      <h1>Robot Monitoring Schedule</h1>
+    </header>
     
-    <div class="instruction">
-      <p><strong>Instructions:</strong> Click on any empty shift cell to sign up. You can change or remove your name by clicking on a cell where you're already scheduled. The schedule operates on a two-week rotation basis. All shift changes must be approved by management.</p>
-      <p><strong>Compensation:</strong> Standard rate: $17.20/hr | Night shift premium: +15% | Weekend premium: +10% | Night + Weekend: +25%</p>
+    <div class="instruction card">
+      <p><strong>Instructions:</strong> Click on any empty shift cell to sign up. You can change or remove your name by clicking on a cell where you're already scheduled. The schedule operates on a two-week rotation basis. Once you select the shift please notify the team on Slack that you have updated the schedule.</p>
+      <p><strong>Compensation:</strong> Evening Shift 10:00-18:00 → $18.00/hr | Night Shift 02:00-10:00 → $20.00/hr | Weekend Shift (flexible start/end time) → $19.00/hr</p>
+      <p class="note"><strong>Note:</strong> Office hours Mon-Friday 10:00-18:00 reserved for the Upside Team</p>
     </div>
     
     <div class="controls">
       <button id="saveButton">Save Changes</button>
       <button id="loadButton">Refresh Schedule</button>
       <button id="exportButton">Export Schedule</button>
-      <button id="clearButton">Clear All Entries</button>
     </div>
     
     <div id="statusMessage" class="status-message hidden"></div>
@@ -238,7 +351,7 @@
       <textarea id="exportBox" readonly></textarea>
     </div>
     
-    <h2>Training Week - Starting May 19th, 2025</h2>
+    <h2>Training Week - May 19, 2025</h2>
     <table>
       <tr>
         <th>Date</th>
@@ -249,297 +362,253 @@
       <tr class="training">
         <td>May 19</td>
         <td>Monday</td>
-        <td>TRAINING DAY 1 (All Technicians)</td>
-        <td>Orientation and system introduction</td>
-      </tr>
-      <tr class="training">
-        <td>May 20</td>
-        <td>Tuesday</td>
-        <td>TRAINING DAY 2 (All Technicians)</td>
-        <td>Monitoring procedures and protocols</td>
-      </tr>
-      <tr class="training">
-        <td>May 21</td>
-        <td>Wednesday</td>
-        <td>TRAINING DAY 3 (All Technicians)</td>
-        <td>Troubleshooting and emergency procedures</td>
-      </tr>
-      <tr class="training">
-        <td>May 22</td>
-        <td>Thursday</td>
-        <td>SHADOWING DAY 1 (Group A)</td>
-        <td>Hands-on supervised monitoring</td>
-      </tr>
-      <tr class="training">
-        <td>May 23</td>
-        <td>Friday</td>
-        <td>SHADOWING DAY 2 (Group B)</td>
-        <td>Hands-on supervised monitoring</td>
+        <td>MANDATORY TRAINING (All Pilots)</td>
+        <td>Orientation, monitoring procedures, troubleshooting, and hands-on supervised monitoring</td>
       </tr>
     </table>
     
-    <h2>Schedule Rotation 1 - May 26 to June 8, 2025</h2>
+    <h2>Schedule Rotation 1 - May 20 to June 1, 2025</h2>
     
-    <h3>Week 1 - May 26 to June 1</h3>
+    <h3>Week 1 - May 20 to May 26</h3>
     <table id="week1">
       <tr>
         <th>Date</th>
         <th>Day</th>
-        <th>10:00 - 18:00</th>
+        <th>10:00 - 18:00 (Office)</th>
         <th>18:00 - 02:00 (Evening)</th>
         <th>02:00 - 10:00 (Night)</th>
       </tr>
       <tr>
+        <td>May 20</td>
+        <td>Tuesday</td>
+        <td class="shift-evening shift-cell" data-date="May 20" data-shift="office"></td>
+        <td class="shift-evening shift-cell" data-date="May 20" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="May 20" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>May 21</td>
+        <td>Wednesday</td>
+        <td class="shift-evening shift-cell" data-date="May 21" data-shift="office"></td>
+        <td class="shift-evening shift-cell" data-date="May 21" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="May 21" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>May 22</td>
+        <td>Thursday</td>
+        <td class="shift-evening shift-cell" data-date="May 22" data-shift="office"></td>
+        <td class="shift-evening shift-cell" data-date="May 22" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="May 22" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>May 23</td>
+        <td>Friday</td>
+        <td class="shift-evening shift-cell" data-date="May 23" data-shift="office"></td>
+        <td class="shift-evening shift-cell" data-date="May 23" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="May 23" data-shift="night"></td>
+      </tr>
+      <tr class="weekend">
+        <td>May 24</td>
+        <td>Saturday</td>
+        <td colspan="3" class="shift-weekend shift-cell" data-date="May 24" data-shift="weekend">Weekend Shift (8 hours, flexible time)</td>
+      </tr>
+      <tr class="weekend">
+        <td>May 25</td>
+        <td>Sunday</td>
+        <td colspan="3" class="shift-weekend shift-cell" data-date="May 25" data-shift="weekend">Weekend Shift (8 hours, flexible time)</td>
+      </tr>
+      <tr>
         <td>May 26</td>
         <td>Monday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="May 26" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="May 26" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="May 26" data-shift="night"></td>
+      </tr>
+    </table>
+    
+    <h3>Week 2 - May 27 to June 1</h3>
+    <table id="week2">
+      <tr>
+        <th>Date</th>
+        <th>Day</th>
+        <th>10:00 - 18:00 (Office)</th>
+        <th>18:00 - 02:00 (Evening)</th>
+        <th>02:00 - 10:00 (Night)</th>
       </tr>
       <tr>
         <td>May 27</td>
         <td>Tuesday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="May 27" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="May 27" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="May 27" data-shift="night"></td>
       </tr>
       <tr>
         <td>May 28</td>
         <td>Wednesday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="May 28" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="May 28" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="May 28" data-shift="night"></td>
       </tr>
       <tr>
         <td>May 29</td>
         <td>Thursday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="May 29" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="May 29" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="May 29" data-shift="night"></td>
       </tr>
       <tr>
         <td>May 30</td>
         <td>Friday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="May 30" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="May 30" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="May 30" data-shift="night"></td>
       </tr>
       <tr class="weekend">
         <td>May 31</td>
         <td>Saturday</td>
-        <td>-</td>
-        <td class="shift-evening shift-cell" data-date="May 31" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="May 31" data-shift="night"></td>
+        <td colspan="3" class="shift-weekend shift-cell" data-date="May 31" data-shift="weekend">Weekend Shift (8 hours, flexible time)</td>
       </tr>
       <tr class="weekend">
         <td>June 1</td>
         <td>Sunday</td>
-        <td>-</td>
-        <td class="shift-evening shift-cell" data-date="June 1" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="June 1" data-shift="night"></td>
+        <td colspan="3" class="shift-weekend shift-cell" data-date="June 1" data-shift="weekend">Weekend Shift (8 hours, flexible time)</td>
       </tr>
     </table>
     
-    <h3>Week 2 - June 2 to June 8</h3>
-    <table id="week2">
+    <h2>Schedule Rotation 2 - June 2 to June 15, 2025</h2>
+    
+    <h3>Week 3 - June 2 to June 8</h3>
+    <table id="week3">
       <tr>
         <th>Date</th>
         <th>Day</th>
-        <th>10:00 - 18:00</th>
+        <th>10:00 - 18:00 (Office)</th>
         <th>18:00 - 02:00 (Evening)</th>
         <th>02:00 - 10:00 (Night)</th>
       </tr>
       <tr>
         <td>June 2</td>
         <td>Monday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 2" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="June 2" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="June 2" data-shift="night"></td>
       </tr>
       <tr>
         <td>June 3</td>
         <td>Tuesday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 3" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="June 3" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="June 3" data-shift="night"></td>
       </tr>
       <tr>
         <td>June 4</td>
         <td>Wednesday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 4" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="June 4" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="June 4" data-shift="night"></td>
       </tr>
       <tr>
         <td>June 5</td>
         <td>Thursday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 5" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="June 5" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="June 5" data-shift="night"></td>
       </tr>
       <tr>
         <td>June 6</td>
         <td>Friday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 6" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="June 6" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="June 6" data-shift="night"></td>
       </tr>
       <tr class="weekend">
         <td>June 7</td>
         <td>Saturday</td>
-        <td>-</td>
-        <td class="shift-evening shift-cell" data-date="June 7" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="June 7" data-shift="night"></td>
+        <td colspan="3" class="shift-weekend shift-cell" data-date="June 7" data-shift="weekend">Weekend Shift (8 hours, flexible time)</td>
       </tr>
       <tr class="weekend">
         <td>June 8</td>
         <td>Sunday</td>
-        <td>-</td>
-        <td class="shift-evening shift-cell" data-date="June 8" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="June 8" data-shift="night"></td>
+        <td colspan="3" class="shift-weekend shift-cell" data-date="June 8" data-shift="weekend">Weekend Shift (8 hours, flexible time)</td>
       </tr>
     </table>
     
-    <h2>Schedule Rotation 2 - June 9 to June 22, 2025</h2>
-    
-    <h3>Week 3 - June 9 to June 15</h3>
-    <table id="week3">
+    <h3>Week 4 - June 9 to June 15</h3>
+    <table id="week4">
       <tr>
         <th>Date</th>
         <th>Day</th>
-        <th>10:00 - 18:00</th>
+        <th>10:00 - 18:00 (Office)</th>
         <th>18:00 - 02:00 (Evening)</th>
         <th>02:00 - 10:00 (Night)</th>
       </tr>
       <tr>
         <td>June 9</td>
         <td>Monday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 9" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="June 9" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="June 9" data-shift="night"></td>
       </tr>
       <tr>
         <td>June 10</td>
         <td>Tuesday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 10" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="June 10" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="June 10" data-shift="night"></td>
       </tr>
       <tr>
         <td>June 11</td>
         <td>Wednesday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 11" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="June 11" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="June 11" data-shift="night"></td>
       </tr>
       <tr>
         <td>June 12</td>
         <td>Thursday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 12" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="June 12" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="June 12" data-shift="night"></td>
       </tr>
       <tr>
         <td>June 13</td>
         <td>Friday</td>
-        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 13" data-shift="office"></td>
         <td class="shift-evening shift-cell" data-date="June 13" data-shift="evening"></td>
         <td class="shift-night shift-cell" data-date="June 13" data-shift="night"></td>
       </tr>
       <tr class="weekend">
         <td>June 14</td>
         <td>Saturday</td>
-        <td>-</td>
-        <td class="shift-evening shift-cell" data-date="June 14" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="June 14" data-shift="night"></td>
+        <td colspan="3" class="shift-weekend shift-cell" data-date="June 14" data-shift="weekend">Weekend Shift (8 hours, flexible time)</td>
       </tr>
       <tr class="weekend">
         <td>June 15</td>
         <td>Sunday</td>
-        <td>-</td>
-        <td class="shift-evening shift-cell" data-date="June 15" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="June 15" data-shift="night"></td>
+        <td colspan="3" class="shift-weekend shift-cell" data-date="June 15" data-shift="weekend">Weekend Shift (8 hours, flexible time)</td>
       </tr>
     </table>
     
-    <h3>Week 4 - June 16 to June 22</h3>
-    <table id="week4">
-      <tr>
-        <th>Date</th>
-        <th>Day</th>
-        <th>10:00 - 18:00</th>
-        <th>18:00 - 02:00 (Evening)</th>
-        <th>02:00 - 10:00 (Night)</th>
-      </tr>
-      <tr>
-        <td>June 16</td>
-        <td>Monday</td>
-        <td>Office Team</td>
-        <td class="shift-evening shift-cell" data-date="June 16" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="June 16" data-shift="night"></td>
-      </tr>
-      <tr>
-        <td>June 17</td>
-        <td>Tuesday</td>
-        <td>Office Team</td>
-        <td class="shift-evening shift-cell" data-date="June 17" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="June 17" data-shift="night"></td>
-      </tr>
-      <tr>
-        <td>June 18</td>
-        <td>Wednesday</td>
-        <td>Office Team</td>
-        <td class="shift-evening shift-cell" data-date="June 18" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="June 18" data-shift="night"></td>
-      </tr>
-      <tr>
-        <td>June 19</td>
-        <td>Thursday</td>
-        <td>Office Team</td>
-        <td class="shift-evening shift-cell" data-date="June 19" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="June 19" data-shift="night"></td>
-      </tr>
-      <tr>
-        <td>June 20</td>
-        <td>Friday</td>
-        <td>Office Team</td>
-        <td class="shift-evening shift-cell" data-date="June 20" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="June 20" data-shift="night"></td>
-      </tr>
-      <tr class="weekend">
-        <td>June 21</td>
-        <td>Saturday</td>
-        <td>-</td>
-        <td class="shift-evening shift-cell" data-date="June 21" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="June 21" data-shift="night"></td>
-      </tr>
-      <tr class="weekend">
-        <td>June 22</td>
-        <td>Sunday</td>
-        <td>-</td>
-        <td class="shift-evening shift-cell" data-date="June 22" data-shift="evening"></td>
-        <td class="shift-night shift-cell" data-date="June 22" data-shift="night"></td>
-      </tr>
-    </table>
-    
-    <div class="notes">
+    <div class="notes card">
       <h3>Schedule Guidelines:</h3>
       <ul>
-        <li>Please sign up for shifts at least 2 weeks in advance</li>
-        <li>Maximum of 5 consecutive night shifts allowed</li>
-        <li>Minimum 10-hour break between shifts</li>
+        <li>Ensure that minimum hours highlighted in the contract are worked per week</li>
+        <li>Upside reserves to cancel the shifts if there is bad weather (rain) with 24 hour notice</li>
+        <li>Please sign up for shifts at least 1 week in advance</li>
         <li>Shift swaps must be approved by management 48 hours in advance</li>
-        <li>All technicians must work at least 2 weekend shifts per month</li>
-        <li>Bi-weekly schedule reviews will be conducted to ensure fair distribution</li>
+        <li>If for any reasons you cannot make the shift please immediately notify on Slack channel and text emergency contacts</li>
       </ul>
       
       <h3>Emergency Contact Information:</h3>
       <ul>
-        <li><strong>Jana Tian (Operations Manager):</strong> [Phone Number] | [Email]</li>
-        <li><strong>Sam (CEO):</strong> [Phone Number] | [Email]</li>
-        <li><strong>Joseph (Software Lead):</strong> [Phone Number] | [Email]</li>
+        <li><strong>Jana Tian (CEO/Operations Manager):</strong> +1 437 425 0797 | jana@upsiderobotics.com</li>
+        <li><strong>Sam (CTO):</strong> +1 519 807 7986 | sam@upsiderobotics.com</li>
+        <li><strong>Joseph (Software Lead):</strong> | [Email]</li>
+        <li><strong>Jitesh (Dashboard Lead):</strong> [Phone Number] | [Email]</li>
         <li><strong>Ravi (Hardware Lead):</strong> [Phone Number] | [Email]</li>
       </ul>
+      
+      <h3>Documentation:</h3>
+      <p>[Coming]</p>
     </div>
   </div>
   
@@ -549,7 +618,19 @@
       <span class="close">&times;</span>
       <h3>Sign Up for Shift</h3>
       <p id="modalShiftInfo"></p>
-      <input type="text" id="nameInput" placeholder="Enter your name">
+      
+      <div id="standardShiftFields">
+        <label for="nameInput">Your Name:</label>
+        <input type="text" id="nameInput" placeholder="Enter your name">
+      </div>
+      
+      <div id="weekendShiftFields" class="hidden">
+        <label for="nameInput">Your Name:</label>
+        <input type="text" id="nameInput2" placeholder="Enter your name">
+        <label for="timeInput">Working Hours (8 hour shift):</label>
+        <input type="text" id="timeInput" placeholder="e.g., 10:00-18:00">
+      </div>
+      
       <button id="confirmNameBtn">Confirm</button>
       <button id="removeNameBtn">Remove My Name</button>
     </div>
@@ -565,12 +646,16 @@
     const modalClose = document.querySelector('.close');
     const modalShiftInfo = document.getElementById('modalShiftInfo');
     const nameInput = document.getElementById('nameInput');
+    const nameInput2 = document.getElementById('nameInput2');
+    const timeInput = document.getElementById('timeInput');
+    const standardShiftFields = document.getElementById('standardShiftFields');
+    const weekendShiftFields = document.getElementById('weekendShiftFields');
     const confirmNameBtn = document.getElementById('confirmNameBtn');
     const removeNameBtn = document.getElementById('removeNameBtn');
     const saveButton = document.getElementById('saveButton');
     const loadButton = document.getElementById('loadButton');
     const exportButton = document.getElementById('exportButton');
-    const clearButton = document.getElementById('clearButton');
+    //const clearButton = document.getElementById('clearButton');
     const statusMessage = document.getElementById('statusMessage');
     const exportSection = document.getElementById('exportSection');
     const exportBox = document.getElementById('exportBox');
@@ -585,10 +670,60 @@
         currentCell = cell;
         const date = cell.getAttribute('data-date');
         const shift = cell.getAttribute('data-shift');
-        const shiftName = shift === 'evening' ? 'Evening (18:00 - 02:00)' : 'Night (02:00 - 10:00)';
         
-        modalShiftInfo.textContent = `${date} - ${shiftName}`;
-        nameInput.value = cell.textContent || '';
+        // Set appropriate modal information based on shift type
+        if (shift === 'weekend') {
+          modalShiftInfo.textContent = `${date} - Weekend Shift (8 hours, flexible time)`;
+          standardShiftFields.classList.add('hidden');
+          weekendShiftFields.classList.remove('hidden');
+          
+          // Parse existing content if any
+          if (cell.textContent && cell.textContent !== 'Weekend Shift (8 hours, flexible time)') {
+            const entries = cell.textContent.split('\n').filter(entry => entry.trim() !== '');
+            
+            if (entries.length > 0) {
+              const latestEntry = entries[entries.length - 1];
+              const nameParts = latestEntry.split(' (');
+              
+              if (nameParts.length === 2) {
+                nameInput2.value = nameParts[0].trim();
+                timeInput.value = nameParts[1].replace(')', '').trim();
+              } else {
+                nameInput2.value = '';
+                timeInput.value = '';
+              }
+            } else {
+              nameInput2.value = '';
+              timeInput.value = '';
+            }
+          } else {
+            nameInput2.value = '';
+            timeInput.value = '';
+          }
+        } else {
+          const shiftNames = {
+            'office': 'Office (10:00 - 18:00)',
+            'evening': 'Evening (18:00 - 02:00)',
+            'night': 'Night (02:00 - 10:00)'
+          };
+          
+          modalShiftInfo.textContent = `${date} - ${shiftNames[shift]}`;
+          standardShiftFields.classList.remove('hidden');
+          weekendShiftFields.classList.add('hidden');
+          
+          // For the office shift, add a note
+          if (shift === 'office') {
+            modalShiftInfo.textContent += ' (Reserved for Upside Team)';
+          }
+          
+          nameInput.value = '';
+          
+          // If there are existing names, populate the field
+          if (cell.textContent) {
+            nameInput.value = cell.textContent;
+          }
+        }
+        
         modal.style.display = 'block';
       });
     });
@@ -607,39 +742,154 @@
     
     // Confirm name button
     confirmNameBtn.addEventListener('click', () => {
-      if (nameInput.value.trim() !== '') {
-        const oldName = currentCell.textContent;
-        const newName = nameInput.value.trim();
+      const shift = currentCell.getAttribute('data-shift');
+      
+      if (shift === 'weekend') {
+        const name = nameInput2.value.trim();
+        const time = timeInput.value.trim();
         
-        if (oldName !== newName) {
-          currentCell.textContent = newName;
-          updateShiftAssignment(
-            currentCell.getAttribute('data-date'),
-            currentCell.getAttribute('data-shift'),
-            newName
-          );
+        if (!name || !time) {
+          showStatusMessage('Please enter both your name and working hours', 'error');
+          return;
+        }
+        
+        // Format: Name (Time)
+        const newEntry = `${name} (${time})`;
+        
+        // Multiple people can sign up for weekend shifts
+        let currentContent = currentCell.textContent;
+        if (currentContent === 'Weekend Shift (8 hours, flexible time)') {
+          currentContent = '';
+        }
+        
+        // Add the new entry
+        if (currentContent) {
+          // Check if this person already signed up
+          const entries = currentContent.split('\n');
+          const nameExists = entries.some(entry => entry.startsWith(name + ' ('));
+          
+          if (nameExists) {
+            // Replace existing entry
+            const updatedEntries = entries.map(entry => {
+              if (entry.startsWith(name + ' (')) {
+                return newEntry;
+              }
+              return entry;
+            });
+            currentCell.textContent = updatedEntries.join('\n');
+          } else {
+            // Add new entry
+            currentCell.textContent = currentContent + '\n' + newEntry;
+          }
+        } else {
+          currentCell.textContent = newEntry;
         }
       } else {
-        showStatusMessage('Please enter a name', 'error');
-        return;
+        // Standard shift
+        const name = nameInput.value.trim();
+        
+        if (!name) {
+          showStatusMessage('Please enter your name', 'error');
+          return;
+        }
+        
+        // For regular shifts, support multiple people
+        let currentContent = currentCell.textContent;
+        
+        if (currentContent) {
+          // Check if this person already signed up
+          if (currentContent.includes(name)) {
+            showStatusMessage('You are already signed up for this shift', 'error');
+            return;
+          }
+          
+          // Add the new name
+          currentCell.textContent = currentContent + '\n' + name;
+        } else {
+          currentCell.textContent = name;
+        }
       }
+      
+      updateShiftAssignment(
+        currentCell.getAttribute('data-date'),
+        currentCell.getAttribute('data-shift'),
+        currentCell.textContent
+      );
+      
       modal.style.display = 'none';
     });
     
     // Remove name button
     removeNameBtn.addEventListener('click', () => {
-      const oldName = currentCell.textContent;
+      const shift = currentCell.getAttribute('data-shift');
       
-      if (oldName) {
-        currentCell.textContent = '';
-        updateShiftAssignment(
-          currentCell.getAttribute('data-date'),
-          currentCell.getAttribute('data-shift'),
-          ''
-        );
-        showStatusMessage('Name removed from shift', 'success');
+      if (shift === 'weekend') {
+        const name = nameInput2.value.trim();
+        
+        if (!name) {
+          showStatusMessage('Please enter your name to remove', 'error');
+          return;
+        }
+        
+        // Parse existing entries
+        let currentContent = currentCell.textContent;
+        if (currentContent === 'Weekend Shift (8 hours, flexible time)') {
+          showStatusMessage('No one is signed up for this shift yet', 'error');
+          return;
+        }
+        
+        const entries = currentContent.split('\n').filter(entry => entry.trim() !== '');
+        const updatedEntries = entries.filter(entry => !entry.startsWith(name + ' ('));
+        
+        if (entries.length === updatedEntries.length) {
+          showStatusMessage('Your name was not found in this shift', 'error');
+          return;
+        }
+        
+        if (updatedEntries.length === 0) {
+          currentCell.textContent = 'Weekend Shift (8 hours, flexible time)';
+        } else {
+          currentCell.textContent = updatedEntries.join('\n');
+        }
+      } else {
+        // Standard shift
+        const name = nameInput.value.trim();
+        
+        if (!name) {
+          showStatusMessage('Please enter your name to remove', 'error');
+          return;
+        }
+        
+        // Parse existing entries
+        let currentContent = currentCell.textContent;
+        
+        if (!currentContent) {
+          showStatusMessage('No one is signed up for this shift yet', 'error');
+          return;
+        }
+        
+        const entries = currentContent.split('\n').filter(entry => entry.trim() !== '');
+        const updatedEntries = entries.filter(entry => entry !== name);
+        
+        if (entries.length === updatedEntries.length) {
+          showStatusMessage('Your name was not found in this shift', 'error');
+          return;
+        }
+        
+        if (updatedEntries.length === 0) {
+          currentCell.textContent = '';
+        } else {
+          currentCell.textContent = updatedEntries.join('\n');
+        }
       }
       
+      updateShiftAssignment(
+        currentCell.getAttribute('data-date'),
+        currentCell.getAttribute('data-shift'),
+        currentCell.textContent
+      );
+      
+      showStatusMessage('Name removed from shift', 'success');
       modal.style.display = 'none';
     });
     
@@ -659,11 +909,11 @@
     });
     
     // Clear all entries button
-    clearButton.addEventListener('click', () => {
+    /*clearButton.addEventListener('click', () => {
       if (confirm('Are you sure you want to clear all shift assignments? This cannot be undone.')) {
         clearAllEntries();
       }
-    });
+    });*/
     
     // Update a single shift assignment
     function updateShiftAssignment(date, shift, technician) {
@@ -721,8 +971,13 @@
         showLoader(false);
         
         if (data.status === 'success') {
-          // Clear current assignments
-          shiftCells.forEach(cell => {
+          // Reset weekend cells to default text
+          document.querySelectorAll('.shift-cell[data-shift="weekend"]').forEach(cell => {
+            cell.textContent = 'Weekend Shift (8 hours, flexible time)';
+          });
+          
+          // Clear other shift cells
+          document.querySelectorAll('.shift-cell:not([data-shift="weekend"])').forEach(cell => {
             cell.textContent = '';
           });
           
@@ -766,7 +1021,13 @@
         showLoader(false);
         
         if (data.status === 'success') {
-          shiftCells.forEach(cell => {
+          // Reset weekend cells to default text
+          document.querySelectorAll('.shift-cell[data-shift="weekend"]').forEach(cell => {
+            cell.textContent = 'Weekend Shift (8 hours, flexible time)';
+          });
+          
+          // Clear other shift cells
+          document.querySelectorAll('.shift-cell:not([data-shift="weekend"])').forEach(cell => {
             cell.textContent = '';
           });
           
@@ -786,47 +1047,86 @@
     function exportSchedule() {
       let exportData = "Upside Robotics - Robot Monitoring Schedule\n\n";
       
-      // Week 1
-      exportData += "Week 1 - May 26 to June 1\n";
-      for (let i = 26; i <= 31; i++) {
+      // Week 1 
+      exportData += "Week 1 - May 20 to May 26\n";
+      for (let i = 20; i <= 26; i++) {
         const date = `May ${i}`;
+        const officeCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="office"]`);
         const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
         const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
+        const weekendCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="weekend"]`);
         
-        exportData += `${date}: Evening: ${eveningCell?.textContent || 'Unassigned'}, Night: ${nightCell?.textContent || 'Unassigned'}\n`;
+        if (weekendCell) {
+          exportData += `${date}: ${weekendCell?.textContent || 'No assignments'}\n`;
+        } else {
+          exportData += `${date}:\n`;
+          exportData += `  Office: ${officeCell?.textContent || 'No assignments'}\n`;
+          exportData += `  Evening: ${eveningCell?.textContent || 'No assignments'}\n`;
+          exportData += `  Night: ${nightCell?.textContent || 'No assignments'}\n`;
+        }
       }
       
-      exportData += `June 1: Evening: ${document.querySelector('.shift-cell[data-date="June 1"][data-shift="evening"]')?.textContent || 'Unassigned'}, `;
-      exportData += `Night: ${document.querySelector('.shift-cell[data-date="June 1"][data-shift="night"]')?.textContent || 'Unassigned'}\n\n`;
-      
       // Week 2
-      exportData += "Week 2 - June 2 to June 8\n";
-      for (let i = 2; i <= 8; i++) {
-        const date = `June ${i}`;
+      exportData += "\nWeek 2 - May 27 to June 1\n";
+      for (let i = 27; i <= 31; i++) {
+        const date = `May ${i}`;
+        const officeCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="office"]`);
         const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
         const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
+        const weekendCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="weekend"]`);
         
-        exportData += `${date}: Evening: ${eveningCell?.textContent || 'Unassigned'}, Night: ${nightCell?.textContent || 'Unassigned'}\n`;
+        if (weekendCell) {
+          exportData += `${date}: ${weekendCell?.textContent || 'No assignments'}\n`;
+        } else {
+          exportData += `${date}:\n`;
+          exportData += `  Office: ${officeCell?.textContent || 'No assignments'}\n`;
+          exportData += `  Evening: ${eveningCell?.textContent || 'No assignments'}\n`;
+          exportData += `  Night: ${nightCell?.textContent || 'No assignments'}\n`;
+        }
+      }
+      
+      for (let i = 1; i <= 1; i++) {
+        const date = `June ${i}`;
+        const weekendCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="weekend"]`);
+        exportData += `${date}: ${weekendCell?.textContent || 'No assignments'}\n`;
       }
       
       // Week 3
-      exportData += "\nWeek 3 - June 9 to June 15\n";
-      for (let i = 9; i <= 15; i++) {
+      exportData += "\nWeek 3 - June 2 to June 8\n";
+      for (let i = 2; i <= 8; i++) {
         const date = `June ${i}`;
+        const officeCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="office"]`);
         const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
         const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
+        const weekendCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="weekend"]`);
         
-        exportData += `${date}: Evening: ${eveningCell?.textContent || 'Unassigned'}, Night: ${nightCell?.textContent || 'Unassigned'}\n`;
+        if (weekendCell) {
+          exportData += `${date}: ${weekendCell?.textContent || 'No assignments'}\n`;
+        } else {
+          exportData += `${date}:\n`;
+          exportData += `  Office: ${officeCell?.textContent || 'No assignments'}\n`;
+          exportData += `  Evening: ${eveningCell?.textContent || 'No assignments'}\n`;
+          exportData += `  Night: ${nightCell?.textContent || 'No assignments'}\n`;
+        }
       }
       
       // Week 4
-      exportData += "\nWeek 4 - June 16 to June 22\n";
-      for (let i = 16; i <= 22; i++) {
+      exportData += "\nWeek 4 - June 9 to June 15\n";
+      for (let i = 9; i <= 15; i++) {
         const date = `June ${i}`;
+        const officeCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="office"]`);
         const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
         const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
+        const weekendCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="weekend"]`);
         
-        exportData += `${date}: Evening: ${eveningCell?.textContent || 'Unassigned'}, Night: ${nightCell?.textContent || 'Unassigned'}\n`;
+        if (weekendCell) {
+          exportData += `${date}: ${weekendCell?.textContent || 'No assignments'}\n`;
+        } else {
+          exportData += `${date}:\n`;
+          exportData += `  Office: ${officeCell?.textContent || 'No assignments'}\n`;
+          exportData += `  Evening: ${eveningCell?.textContent || 'No assignments'}\n`;
+          exportData += `  Night: ${nightCell?.textContent || 'No assignments'}\n`;
+        }
       }
       
       // Show in export box
@@ -844,11 +1144,11 @@
       shiftCells.forEach(cell => {
         const date = cell.getAttribute('data-date');
         const shift = cell.getAttribute('data-shift');
-        const name = cell.textContent;
+        const content = cell.textContent;
         
-        if (name) {
+        if (content && (shift !== 'weekend' || content !== 'Weekend Shift (8 hours, flexible time)')) {
           const key = `${date}-${shift}`;
-          scheduleData[key] = name;
+          scheduleData[key] = content;
         }
       });
       
@@ -862,12 +1162,22 @@
       if (savedData) {
         const scheduleData = JSON.parse(savedData);
         
-        shiftCells.forEach(cell => {
-          const date = cell.getAttribute('data-date');
-          const shift = cell.getAttribute('data-shift');
-          const key = `${date}-${shift}`;
+        // Reset weekend cells
+        document.querySelectorAll('.shift-cell[data-shift="weekend"]').forEach(cell => {
+          cell.textContent = 'Weekend Shift (8 hours, flexible time)';
+        });
+        
+        // Clear other cells
+        document.querySelectorAll('.shift-cell:not([data-shift="weekend"])').forEach(cell => {
+          cell.textContent = '';
+        });
+        
+        // Apply saved data
+        Object.keys(scheduleData).forEach(key => {
+          const [date, shift] = key.split('-');
+          const cell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="${shift}"]`);
           
-          if (scheduleData[key]) {
+          if (cell) {
             cell.textContent = scheduleData[key];
           }
         });
@@ -895,17 +1205,23 @@
       }, 3000);
     }
     
-    // Load schedule on page load
+    // Initialize weekend cells with default text
     document.addEventListener('DOMContentLoaded', () => {
-      // First try loading from Google Sheets
+      // Set default text for weekend cells
+      document.querySelectorAll('.shift-cell[data-shift="weekend"]').forEach(cell => {
+        if (!cell.textContent) {
+          cell.textContent = 'Weekend Shift (8 hours, flexible time)';
+        }
+      });
+      
+      // Load the schedule
       loadScheduleFromSheet();
       
       // Alert if API URL hasn't been set
-      if (API_URL === 'REPLACE_WITH_YOUR_GOOGLE_APPS_SCRIPT_URL') {
+      if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
         showStatusMessage('Warning: Google Sheets API URL not configured. Using local storage only.', 'error');
       }
     });
   </script>
 </body>
 </html>
-      
