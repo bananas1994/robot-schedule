@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upside Robotics - Robot Monitoring Schedule</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    h2 {
+      color: #3498db;
+      margin: 20px 0 10px;
+    }
+    
+    h3 {
+      color: #2980b9;
+      margin: 15px 0 10px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    
+    .shift-evening {
+      background-color: #fef9e7;
+    }
+    
+    .shift-night {
+      background-color: #eaecee;
+    }
+    
+    .training {
+      background-color: #d5f5e3;
+      font-weight: bold;
+    }
+    
+    .weekend {
+      font-weight: bold;
+    }
+    
+    .notes {
+      margin-top: 20px;
+    }
+    
+    .instruction {
+      background-color: #f8f9f9;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      border-left: 5px solid #3498db;
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 5px;
+    }
+    
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+    .status-message {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    
+    .success {
+      background-color: #d5f5e3;
+      border: 1px solid #2ecc71;
+    }
+    
+    .error {
+      background-color: #fadbd8;
+      border: 1px solid #e74c3c;
+    }
+    
+    #exportSection {
+      margin-top: 20px;
+    }
+    
+    #exportBox {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 5px;
+    }
+    
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    
+    #nameInput {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    /* Loading spinner */
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 2s linear infinite;
+      margin: 20px auto;
+      display: none;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+      .controls {
+        flex-direction: column;
+      }
+      
+      button {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Upside Robotics - Robot Monitoring Schedule</h1>
+    
+    <div class="instruction">
+      <p><strong>Instructions:</strong> Click on any empty shift cell to sign up. You can change or remove your name by clicking on a cell where you're already scheduled. The schedule operates on a two-week rotation basis. All shift changes must be approved by management.</p>
+      <p><strong>Compensation:</strong> Standard rate: $17.20/hr | Night shift premium: +15% | Weekend premium: +10% | Night + Weekend: +25%</p>
+    </div>
+    
+    <div class="controls">
+      <button id="saveButton">Save Changes</button>
+      <button id="loadButton">Refresh Schedule</button>
+      <button id="exportButton">Export Schedule</button>
+      <button id="clearButton">Clear All Entries</button>
+    </div>
+    
+    <div id="statusMessage" class="status-message hidden"></div>
+    <div id="loader" class="loader"></div>
+    
+    <div id="exportSection" class="hidden">
+      <h3>Export Data (Copy this text)</h3>
+      <textarea id="exportBox" readonly></textarea>
+    </div>
+    
+    <h2>Training Week - Starting May 19th, 2025</h2>
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Day</th>
+        <th>10:00 - 18:00</th>
+        <th>Notes</th>
+      </tr>
+      <tr class="training">
+        <td>May 19</td>
+        <td>Monday</td>
+        <td>TRAINING DAY 1 (All Technicians)</td>
+        <td>Orientation and system introduction</td>
+      </tr>
+      <tr class="training">
+        <td>May 20</td>
+        <td>Tuesday</td>
+        <td>TRAINING DAY 2 (All Technicians)</td>
+        <td>Monitoring procedures and protocols</td>
+      </tr>
+      <tr class="training">
+        <td>May 21</td>
+        <td>Wednesday</td>
+        <td>TRAINING DAY 3 (All Technicians)</td>
+        <td>Troubleshooting and emergency procedures</td>
+      </tr>
+      <tr class="training">
+        <td>May 22</td>
+        <td>Thursday</td>
+        <td>SHADOWING DAY 1 (Group A)</td>
+        <td>Hands-on supervised monitoring</td>
+      </tr>
+      <tr class="training">
+        <td>May 23</td>
+        <td>Friday</td>
+        <td>SHADOWING DAY 2 (Group B)</td>
+        <td>Hands-on supervised monitoring</td>
+      </tr>
+    </table>
+    
+    <h2>Schedule Rotation 1 - May 26 to June 8, 2025</h2>
+    
+    <h3>Week 1 - May 26 to June 1</h3>
+    <table id="week1">
+      <tr>
+        <th>Date</th>
+        <th>Day</th>
+        <th>10:00 - 18:00</th>
+        <th>18:00 - 02:00 (Evening)</th>
+        <th>02:00 - 10:00 (Night)</th>
+      </tr>
+      <tr>
+        <td>May 26</td>
+        <td>Monday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="May 26" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="May 26" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>May 27</td>
+        <td>Tuesday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="May 27" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="May 27" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>May 28</td>
+        <td>Wednesday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="May 28" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="May 28" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>May 29</td>
+        <td>Thursday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="May 29" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="May 29" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>May 30</td>
+        <td>Friday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="May 30" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="May 30" data-shift="night"></td>
+      </tr>
+      <tr class="weekend">
+        <td>May 31</td>
+        <td>Saturday</td>
+        <td>-</td>
+        <td class="shift-evening shift-cell" data-date="May 31" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="May 31" data-shift="night"></td>
+      </tr>
+      <tr class="weekend">
+        <td>June 1</td>
+        <td>Sunday</td>
+        <td>-</td>
+        <td class="shift-evening shift-cell" data-date="June 1" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 1" data-shift="night"></td>
+      </tr>
+    </table>
+    
+    <h3>Week 2 - June 2 to June 8</h3>
+    <table id="week2">
+      <tr>
+        <th>Date</th>
+        <th>Day</th>
+        <th>10:00 - 18:00</th>
+        <th>18:00 - 02:00 (Evening)</th>
+        <th>02:00 - 10:00 (Night)</th>
+      </tr>
+      <tr>
+        <td>June 2</td>
+        <td>Monday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 2" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 2" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>June 3</td>
+        <td>Tuesday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 3" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 3" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>June 4</td>
+        <td>Wednesday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 4" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 4" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>June 5</td>
+        <td>Thursday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 5" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 5" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>June 6</td>
+        <td>Friday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 6" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 6" data-shift="night"></td>
+      </tr>
+      <tr class="weekend">
+        <td>June 7</td>
+        <td>Saturday</td>
+        <td>-</td>
+        <td class="shift-evening shift-cell" data-date="June 7" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 7" data-shift="night"></td>
+      </tr>
+      <tr class="weekend">
+        <td>June 8</td>
+        <td>Sunday</td>
+        <td>-</td>
+        <td class="shift-evening shift-cell" data-date="June 8" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 8" data-shift="night"></td>
+      </tr>
+    </table>
+    
+    <h2>Schedule Rotation 2 - June 9 to June 22, 2025</h2>
+    
+    <h3>Week 3 - June 9 to June 15</h3>
+    <table id="week3">
+      <tr>
+        <th>Date</th>
+        <th>Day</th>
+        <th>10:00 - 18:00</th>
+        <th>18:00 - 02:00 (Evening)</th>
+        <th>02:00 - 10:00 (Night)</th>
+      </tr>
+      <tr>
+        <td>June 9</td>
+        <td>Monday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 9" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 9" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>June 10</td>
+        <td>Tuesday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 10" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 10" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>June 11</td>
+        <td>Wednesday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 11" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 11" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>June 12</td>
+        <td>Thursday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 12" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 12" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>June 13</td>
+        <td>Friday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 13" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 13" data-shift="night"></td>
+      </tr>
+      <tr class="weekend">
+        <td>June 14</td>
+        <td>Saturday</td>
+        <td>-</td>
+        <td class="shift-evening shift-cell" data-date="June 14" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 14" data-shift="night"></td>
+      </tr>
+      <tr class="weekend">
+        <td>June 15</td>
+        <td>Sunday</td>
+        <td>-</td>
+        <td class="shift-evening shift-cell" data-date="June 15" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 15" data-shift="night"></td>
+      </tr>
+    </table>
+    
+    <h3>Week 4 - June 16 to June 22</h3>
+    <table id="week4">
+      <tr>
+        <th>Date</th>
+        <th>Day</th>
+        <th>10:00 - 18:00</th>
+        <th>18:00 - 02:00 (Evening)</th>
+        <th>02:00 - 10:00 (Night)</th>
+      </tr>
+      <tr>
+        <td>June 16</td>
+        <td>Monday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 16" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 16" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>June 17</td>
+        <td>Tuesday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 17" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 17" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>June 18</td>
+        <td>Wednesday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 18" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 18" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>June 19</td>
+        <td>Thursday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 19" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 19" data-shift="night"></td>
+      </tr>
+      <tr>
+        <td>June 20</td>
+        <td>Friday</td>
+        <td>Office Team</td>
+        <td class="shift-evening shift-cell" data-date="June 20" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 20" data-shift="night"></td>
+      </tr>
+      <tr class="weekend">
+        <td>June 21</td>
+        <td>Saturday</td>
+        <td>-</td>
+        <td class="shift-evening shift-cell" data-date="June 21" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 21" data-shift="night"></td>
+      </tr>
+      <tr class="weekend">
+        <td>June 22</td>
+        <td>Sunday</td>
+        <td>-</td>
+        <td class="shift-evening shift-cell" data-date="June 22" data-shift="evening"></td>
+        <td class="shift-night shift-cell" data-date="June 22" data-shift="night"></td>
+      </tr>
+    </table>
+    
+    <div class="notes">
+      <h3>Schedule Guidelines:</h3>
+      <ul>
+        <li>Please sign up for shifts at least 2 weeks in advance</li>
+        <li>Maximum of 5 consecutive night shifts allowed</li>
+        <li>Minimum 10-hour break between shifts</li>
+        <li>Shift swaps must be approved by management 48 hours in advance</li>
+        <li>All technicians must work at least 2 weekend shifts per month</li>
+        <li>Bi-weekly schedule reviews will be conducted to ensure fair distribution</li>
+      </ul>
+      
+      <h3>Emergency Contact Information:</h3>
+      <ul>
+        <li><strong>Jana Tian (Operations Manager):</strong> [Phone Number] | [Email]</li>
+        <li><strong>Sam (CEO):</strong> [Phone Number] | [Email]</li>
+        <li><strong>Joseph (Software Lead):</strong> [Phone Number] | [Email]</li>
+        <li><strong>Ravi (Hardware Lead):</strong> [Phone Number] | [Email]</li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Name Input Modal -->
+  <div id="nameModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Sign Up for Shift</h3>
+      <p id="modalShiftInfo"></p>
+      <input type="text" id="nameInput" placeholder="Enter your name">
+      <button id="confirmNameBtn">Confirm</button>
+      <button id="removeNameBtn">Remove My Name</button>
+    </div>
+  </div>
+  
+  <script>
+    // Google Apps Script URL
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyqlAsbzG-DB8RGQJ4EWqjZ5TWRflnig3j5nP1HvWz4k4V-JFfK-Dng2O3wKN5zNgbE/exec';
+    
+    // DOM Elements
+    const shiftCells = document.querySelectorAll('.shift-cell');
+    const modal = document.getElementById('nameModal');
+    const modalClose = document.querySelector('.close');
+    const modalShiftInfo = document.getElementById('modalShiftInfo');
+    const nameInput = document.getElementById('nameInput');
+    const confirmNameBtn = document.getElementById('confirmNameBtn');
+    const removeNameBtn = document.getElementById('removeNameBtn');
+    const saveButton = document.getElementById('saveButton');
+    const loadButton = document.getElementById('loadButton');
+    const exportButton = document.getElementById('exportButton');
+    const clearButton = document.getElementById('clearButton');
+    const statusMessage = document.getElementById('statusMessage');
+    const exportSection = document.getElementById('exportSection');
+    const exportBox = document.getElementById('exportBox');
+    const loader = document.getElementById('loader');
+    
+    // Current cell being edited
+    let currentCell = null;
+    
+    // Add event listeners to shift cells
+    shiftCells.forEach(cell => {
+      cell.addEventListener('click', () => {
+        currentCell = cell;
+        const date = cell.getAttribute('data-date');
+        const shift = cell.getAttribute('data-shift');
+        const shiftName = shift === 'evening' ? 'Evening (18:00 - 02:00)' : 'Night (02:00 - 10:00)';
+        
+        modalShiftInfo.textContent = `${date} - ${shiftName}`;
+        nameInput.value = cell.textContent || '';
+        modal.style.display = 'block';
+      });
+    });
+    
+    // Close modal when clicking X
+    modalClose.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+    
+    // Confirm name button
+    confirmNameBtn.addEventListener('click', () => {
+      if (nameInput.value.trim() !== '') {
+        const oldName = currentCell.textContent;
+        const newName = nameInput.value.trim();
+        
+        if (oldName !== newName) {
+          currentCell.textContent = newName;
+          updateShiftAssignment(
+            currentCell.getAttribute('data-date'),
+            currentCell.getAttribute('data-shift'),
+            newName
+          );
+        }
+      } else {
+        showStatusMessage('Please enter a name', 'error');
+        return;
+      }
+      modal.style.display = 'none';
+    });
+    
+    // Remove name button
+    removeNameBtn.addEventListener('click', () => {
+      const oldName = currentCell.textContent;
+      
+      if (oldName) {
+        currentCell.textContent = '';
+        updateShiftAssignment(
+          currentCell.getAttribute('data-date'),
+          currentCell.getAttribute('data-shift'),
+          ''
+        );
+        showStatusMessage('Name removed from shift', 'success');
+      }
+      
+      modal.style.display = 'none';
+    });
+    
+    // Save schedule button
+    saveButton.addEventListener('click', () => {
+      saveAllChanges();
+    });
+    
+    // Load schedule button
+    loadButton.addEventListener('click', () => {
+      loadScheduleFromSheet();
+    });
+    
+    // Export schedule button
+    exportButton.addEventListener('click', () => {
+      exportSchedule();
+    });
+    
+    // Clear all entries button
+    clearButton.addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear all shift assignments? This cannot be undone.')) {
+        clearAllEntries();
+      }
+    });
+    
+    // Update a single shift assignment
+    function updateShiftAssignment(date, shift, technician) {
+      showLoader(true);
+      
+      fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          'action': 'updateShift',
+          'date': date,
+          'shift': shift,
+          'technician': technician
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        showLoader(false);
+        
+        if (data.status === 'success') {
+          showStatusMessage('Shift updated successfully!', 'success');
+        } else {
+          showStatusMessage('Error: ' + data.message, 'error');
+        }
+      })
+      .catch(error => {
+        showLoader(false);
+        showStatusMessage('Network error: Could not update shift. Changes saved locally.', 'error');
+        // Fallback to localStorage if Google Sheets API fails
+        saveToLocalStorage();
+      });
+    }
+    
+    // Save all changes
+    function saveAllChanges() {
+      showStatusMessage('Saving all changes...', 'success');
+      
+      // Simple check - real implementation would track changes
+      saveToLocalStorage();
+      showStatusMessage('All changes saved!', 'success');
+    }
+    
+    // Load schedule from Google Sheet
+    function loadScheduleFromSheet() {
+      showLoader(true);
+      showStatusMessage('Loading schedule...', 'success');
+      
+      fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          'action': 'getSchedule'
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        showLoader(false);
+        
+        if (data.status === 'success') {
+          // Clear current assignments
+          shiftCells.forEach(cell => {
+            cell.textContent = '';
+          });
+          
+          // Apply new assignments
+          data.data.forEach(assignment => {
+            const cell = document.querySelector(`.shift-cell[data-date="${assignment.date}"][data-shift="${assignment.shift}"]`);
+            if (cell) {
+              cell.textContent = assignment.technician;
+            }
+          });
+          
+          showStatusMessage('Schedule loaded successfully!', 'success');
+        } else {
+          showStatusMessage('Error: ' + data.message, 'error');
+          
+          // Fallback to localStorage
+          loadFromLocalStorage();
+        }
+      })
+      .catch(error => {
+        showLoader(false);
+        showStatusMessage('Network error: Could not load from server. Loading from local storage.', 'error');
+        
+        // Fallback to localStorage
+        loadFromLocalStorage();
+      });
+    }
+    
+    // Clear all entries
+    function clearAllEntries() {
+      showLoader(true);
+      
+      fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          'action': 'clearSchedule'
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        showLoader(false);
+        
+        if (data.status === 'success') {
+          shiftCells.forEach(cell => {
+            cell.textContent = '';
+          });
+          
+          showStatusMessage('All entries cleared', 'success');
+          localStorage.removeItem('robotMonitoringSchedule');
+        } else {
+          showStatusMessage('Error: ' + data.message, 'error');
+        }
+      })
+      .catch(error => {
+        showLoader(false);
+        showStatusMessage('Network error: Could not clear schedule on server.', 'error');
+      });
+    }
+    
+    // Export schedule
+    function exportSchedule() {
+      let exportData = "Upside Robotics - Robot Monitoring Schedule\n\n";
+      
+      // Week 1
+      exportData += "Week 1 - May 26 to June 1\n";
+      for (let i = 26; i <= 31; i++) {
+        const date = `May ${i}`;
+        const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
+        const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
+        
+        exportData += `${date}: Evening: ${eveningCell?.textContent || 'Unassigned'}, Night: ${nightCell?.textContent || 'Unassigned'}\n`;
+      }
+      
+      exportData += `June 1: Evening: ${document.querySelector('.shift-cell[data-date="June 1"][data-shift="evening"]')?.textContent || 'Unassigned'}, `;
+      exportData += `Night: ${document.querySelector('.shift-cell[data-date="June 1"][data-shift="night"]')?.textContent || 'Unassigned'}\n\n`;
+      
+      // Week 2
+      exportData += "Week 2 - June 2 to June 8\n";
+      for (let i = 2; i <= 8; i++) {
+        const date = `June ${i}`;
+        const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
+        const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
+        
+        exportData += `${date}: Evening: ${eveningCell?.textContent || 'Unassigned'}, Night: ${nightCell?.textContent || 'Unassigned'}\n`;
+      }
+      
+      // Week 3
+      exportData += "\nWeek 3 - June 9 to June 15\n";
+      for (let i = 9; i <= 15; i++) {
+        const date = `June ${i}`;
+        const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
+        const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
+        
+        exportData += `${date}: Evening: ${eveningCell?.textContent || 'Unassigned'}, Night: ${nightCell?.textContent || 'Unassigned'}\n`;
+      }
+      
+      // Week 4
+      exportData += "\nWeek 4 - June 16 to June 22\n";
+      for (let i = 16; i <= 22; i++) {
+        const date = `June ${i}`;
+        const eveningCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="evening"]`);
+        const nightCell = document.querySelector(`.shift-cell[data-date="${date}"][data-shift="night"]`);
+        
+        exportData += `${date}: Evening: ${eveningCell?.textContent || 'Unassigned'}, Night: ${nightCell?.textContent || 'Unassigned'}\n`;
+      }
+      
+      // Show in export box
+      exportBox.value = exportData;
+      exportSection.classList.remove('hidden');
+      
+      // Select the text for easy copying
+      exportBox.select();
+    }
+    
+    // Save to localStorage as fallback
+    function saveToLocalStorage() {
+      const scheduleData = {};
+      
+      shiftCells.forEach(cell => {
+        const date = cell.getAttribute('data-date');
+        const shift = cell.getAttribute('data-shift');
+        const name = cell.textContent;
+        
+        if (name) {
+          const key = `${date}-${shift}`;
+          scheduleData[key] = name;
+        }
+      });
+      
+      localStorage.setItem('robotMonitoringSchedule', JSON.stringify(scheduleData));
+    }
+    
+    // Load from localStorage as fallback
+    function loadFromLocalStorage() {
+      const savedData = localStorage.getItem('robotMonitoringSchedule');
+      
+      if (savedData) {
+        const scheduleData = JSON.parse(savedData);
+        
+        shiftCells.forEach(cell => {
+          const date = cell.getAttribute('data-date');
+          const shift = cell.getAttribute('data-shift');
+          const key = `${date}-${shift}`;
+          
+          if (scheduleData[key]) {
+            cell.textContent = scheduleData[key];
+          }
+        });
+        
+        showStatusMessage('Schedule loaded from local storage', 'success');
+      } else {
+        showStatusMessage('No saved schedule found locally', 'error');
+      }
+    }
+    
+    // Function to show/hide loading spinner
+    function showLoader(show) {
+      loader.style.display = show ? 'block' : 'none';
+    }
+    
+    // Function to show status messages
+    function showStatusMessage(message, type) {
+      statusMessage.textContent = message;
+      statusMessage.className = 'status-message';
+      statusMessage.classList.add(type);
+      statusMessage.classList.remove('hidden');
+      
+      setTimeout(() => {
+        statusMessage.classList.add('hidden');
+      }, 3000);
+    }
+    
+    // Load schedule on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      // First try loading from Google Sheets
+      loadScheduleFromSheet();
+      
+      // Alert if API URL hasn't been set
+      if (API_URL === 'REPLACE_WITH_YOUR_GOOGLE_APPS_SCRIPT_URL') {
+        showStatusMessage('Warning: Google Sheets API URL not configured. Using local storage only.', 'error');
+      }
+    });
+  </script>
+</body>
+</html>
+      
